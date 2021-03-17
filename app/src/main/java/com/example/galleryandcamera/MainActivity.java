@@ -100,17 +100,18 @@ public class MainActivity extends AppCompatActivity {
 //        startActivityForResult(intent, CAMERA_REQUEST_CODE);
 //    }
 
-    @SuppressLint("MissingSuperCall")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE)
         {
 //            Bitmap image = (Bitmap) data.getExtras().get("data");
 //            selectedImage.setImageBitmap(image);
-            if(resultCode== Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK)
+            {
                 File f = new File(currentPhotoPath);
                 selectedImage.setImageURI(Uri.fromFile(f));
-                Log.d(TAG, "onActivityResult: Absolute Url of Image is"+Uri.fromFile(f));
+                Log.d(TAG, "onActivityResult: Absolute Url of Image is" + Uri.fromFile(f));
 
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                 Uri contentUri = Uri.fromFile(f);
@@ -124,12 +125,13 @@ public class MainActivity extends AppCompatActivity {
         {
 //            Bitmap image = (Bitmap) data.getExtras().get("data");
 //            selectedImage.setImageBitmap(image);
-            if(resultCode== Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK)
+            {
 
                 Uri contentUri = data.getData();
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                String imageFileName = "JPEG_Allmix" + timeStamp + "."+getFileExt(contentUri);
-                Log.d(TAG, "onActivityResult:  Gallery Image Uri: "+ imageFileName);
+                String imageFileName = "JPEG_Allmix" + timeStamp + "." + getFileExt(contentUri);
+                Log.d(TAG, "onActivityResult:  Gallery Image Uri: " + imageFileName);
                 selectedImage.setImageURI(contentUri);
 
 
