@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                Log.d(TAG, "onClick:  boton gallery funciona");
+                Intent gallery = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(gallery,GALLERY_REQUEST_CODE);
             }
         });
 
@@ -114,6 +118,30 @@ public class MainActivity extends AppCompatActivity {
                 this.sendBroadcast(mediaScanIntent);
             }
         }
+
+
+        if (requestCode == GALLERY_REQUEST_CODE)
+        {
+//            Bitmap image = (Bitmap) data.getExtras().get("data");
+//            selectedImage.setImageBitmap(image);
+            if(resultCode== Activity.RESULT_OK){
+
+                Uri contentUri = data.getData();
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String imageFileName = "JPEG_Allmix" + timeStamp + "."+getFileExt(contentUri);
+                Log.d(TAG, "onActivityResult:  Gallery Image Uri: "+ imageFileName);
+                selectedImage.setImageURI(contentUri);
+
+
+            }
+        }
+
+    }
+
+    private String getFileExt(Uri contentUri) {
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return  mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(contentUri));
     }
 
     private File createImageFile() throws IOException {
