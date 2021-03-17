@@ -9,6 +9,7 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MainActivity.CAMERA_PERM_CODE);
         } else
         {
-            openCamera();
+            dispatchTakePictureIntent();
         }
 
     }
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
-                openCamera();
+                dispatchTakePictureIntent();
             } else
             {
                 Toast.makeText(this, "permiso denegado", Toast.LENGTH_SHORT).show();
@@ -89,19 +90,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void openCamera() {
-        Toast.makeText(this, "Camera Open Request", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, CAMERA_REQUEST_CODE);
-    }
+//    private void openCamera() {
+//        Toast.makeText(this, "Camera Open Request", Toast.LENGTH_SHORT).show();
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(intent, CAMERA_REQUEST_CODE);
+//    }
 
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE)
         {
-            Bitmap image = (Bitmap) data.getExtras().get("data");
-            selectedImage.setImageBitmap(image);
+//            Bitmap image = (Bitmap) data.getExtras().get("data");
+//            selectedImage.setImageBitmap(image);
+            if(resultCode== Activity.RESULT_OK){
+                File f = new File(currentPhotoPath);
+                selectedImage.setImageURI(Uri.fromFile(f));
+            }
         }
     }
 
@@ -138,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
+                        "com.example.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 //                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
